@@ -1,5 +1,6 @@
 import {Request, Response, Router} from 'express'
 import {productsRepository} from '../repositories/products-repository'
+import {requestCounter} from '../index'
 
 export const productsRouter = Router({})
 
@@ -10,7 +11,7 @@ productsRouter.get('/', (req: Request, res: Response) => {
 
     const foundProducts = productsRepository.findProducts(title)
 
-    if (foundProducts) res.send(foundProducts)
+    if (foundProducts) res.send(foundProducts + requestCounter)
     else res.send(404)
 })
 
