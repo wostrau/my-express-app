@@ -5,13 +5,13 @@ const products = [
     {id: 2, title: 'orange'}
 ]
 
-export const productsRepository = {
+export const productsMemoryRepository = {
     async findProducts(title: string | null): Promise<ProductType[]> {
         if (title) {
             return products.filter(p => p.title.indexOf(title) > -1)
         } else return products
     },
-    findProductById(id: number): ProductType | null {
+    async findProductById(id: number): Promise<ProductType | null> {
         const foundProduct = products.find(p => p.id === id)
         if (foundProduct) {
             return foundProduct

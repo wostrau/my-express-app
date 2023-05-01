@@ -1,5 +1,5 @@
 import {Request, Response, Router} from 'express'
-import {productsRepository, ProductType} from '../repositories/products-repository'
+import {productsDatabaseRepository, ProductType} from '../repositories/products-database-repository'
 import {body} from 'express-validator'
 import {inputValidationMiddleware} from '../middlewares/input-validation-middleware'
 
@@ -16,7 +16,7 @@ productsRouter.get('/', async (req: Request, res: Response) => {
         ? req.query.title?.toString()
         : null
 
-    const foundProducts: ProductType[] = await productsRepository.findProducts(title)
+    const foundProducts: ProductType[] = await productsDatabaseRepository.findProducts(title)
 
     let start = performance.now()
     while (performance.now() - start < 3000) {
@@ -28,15 +28,15 @@ productsRouter.get('/', async (req: Request, res: Response) => {
     else res.send(404)
 })
 
-productsRouter.get('/:id', (req: Request, res: Response) => {
-    const product = productsRepository.findProductById(Number(req.params.id))
+productsRouter.get('/:id', async (req: Request, res: Response) => {
+    const product: ProductType | null = await productsDatabaseRepository.findProductById(Number(req.params.id))
 
     if (product) res.send(product)
     else res.send(404)
 })
 
 productsRouter.delete('/:id', async (req: Request, res: Response) => {
-    const isDeleted: boolean = await productsRepository.deleteProduct(Number(req.params.id))
+    const isDeleted: boolean = await productsDatabaseRepository.deleteProduct(Number(req.params.id))
 
     if (isDeleted) res.send(204)
     else res.send(404)
@@ -46,7 +46,7 @@ productsRouter.post('/',
     titleValidation,
     inputValidationMiddleware,
     async (req: Request, res: Response) => {
-        const newProduct: ProductType = await productsRepository.createProduct(req.body.title)
+        const newProduct: ProductType = await productsDatabaseRepository.createProduct(req.body.title)
 
         res.status(201).send(newProduct)
     })
@@ -55,10 +55,10 @@ productsRouter.put('/:id',
     titleValidation,
     inputValidationMiddleware,
     async (req: Request, res: Response) => {
-        const isUpdated: boolean = await productsRepository.updateProduct(Number(req.params.id), req.body.title)
+        const isUpdated: boolean = await productsDatabaseRepository.updateProduct(Number(req.params.id), req.body.title)
 
         if (isUpdated) {
-            const product = productsRepository.findProductById(Number(req.params.id))
+            const product = productsDatabaseRepository.findProductById(Number(req.params.id))
             res.send(product)
         } else res.send(404)
     })
