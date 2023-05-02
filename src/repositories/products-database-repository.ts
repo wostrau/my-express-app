@@ -1,7 +1,4 @@
-import {productsCollection} from './db'
-
-
-export type ProductType = { id: number, title: string }
+import {productsCollection, ProductType} from './db'
 
 
 export const productsDatabaseRepository = {
@@ -16,8 +13,7 @@ export const productsDatabaseRepository = {
             return foundProduct
         } else return null
     },
-    async createProduct(title: string): Promise<ProductType> {
-        const newProduct: ProductType = {id: Number(new Date()), title}
+    async createProduct(newProduct: ProductType): Promise<ProductType> {
         await productsCollection.insertOne(newProduct)
         return newProduct
     },

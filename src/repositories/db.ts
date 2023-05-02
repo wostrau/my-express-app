@@ -1,5 +1,4 @@
 import {MongoClient} from 'mongodb'
-import {ProductType} from './products-database-repository'
 
 const mongoUri = process.env.mongoURI || 'mongodb://0.0.0.0:27017/?maxPoolSize=20&w=majority'
 
@@ -16,6 +15,8 @@ export async function runDb() {
     }
 }
 
+export type ProductType = { id: number, title: string }
 export const productsCollection = client
     .db('store')
     .collection<ProductType>('products')
+
